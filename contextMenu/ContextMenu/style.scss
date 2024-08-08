@@ -1,0 +1,15 @@
+context-menu {
+  display: none;
+  position: absolute;
+  min-width: 200px;
+  &.open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  background: #fff;
+  border: 1px solid #e1e1e1;
+  border-bottom:none;
+  box-shadow: 10px 5px 5px #e1e1e1;
+  transform: translateY(100%);
+}

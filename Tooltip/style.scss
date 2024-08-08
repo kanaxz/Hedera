@@ -1,0 +1,15 @@
+tool-tip {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  background-color: #e1e1e1;
+  border: 1px solid rgba(#e1e1e1,0.5);
+  width: max-content;
+  padding: 5px;
+  top:0;
+  left:calc(100% + 10px);
+
+  &.show {
+    display: block;
+  }
+}

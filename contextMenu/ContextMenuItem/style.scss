@@ -1,0 +1,11 @@
+context-menu-item {
+  display: block;
+  width: 100%;
+  padding: 5px;
+  border-bottom: 1px solid #e1e1e1;
+  cursor: pointer;
+  &:hover,
+  &.selected {
+    background-color: rgba(#3498db, 0.3);
+  }
+}

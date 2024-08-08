@@ -1,0 +1,40 @@
+app-notifications-list {
+  position: absolute;
+  top: 15%;
+  left: 75%;
+  width: 25%;
+  overflow: hidden;
+  .notifications {
+    display: flex;
+    flex-direction: column;
+    .notification {
+      display: flex;
+      flex-direction: row;
+      background-color: rgba(#fff,0.8);
+      margin-bottom: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      padding: 8px;
+      border: 1px solid #e1e1e1;
+      label {
+        margin-left: 10px;
+      }
+      &.closed {
+        margin-left:1000px;
+        transition-duration: 0.5s;
+      }
+      &.info {
+        background-color: blue;
+        color: white;
+      }
+      &.success {
+        background-color: green;
+        color: white;
+      }
+      &.error {
+        background-color: red;
+        color: white;
+      }
+    }
+  }
+}

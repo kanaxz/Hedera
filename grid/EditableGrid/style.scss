@@ -1,0 +1,58 @@
+editable-grid {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  &.hover {
+    .object {
+      pointer-events: none;
+    }
+  }
+
+  .grid-panel {
+    > .content {
+    }
+  }
+
+  .grid-panel,
+  .column,
+  .row {
+    //background-color: rgba(#aaa, 0.1);
+  }
+  .root {
+    width: 100%;
+    height: 100%;
+    .column {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      .row {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+
+
+        &.hover {
+          &.left {
+            &::before {
+              content: " ";
+              background-color: aquamarine;
+              width: 50px;
+              height: 100%;
+            }
+          }
+          &.right {
+            &::after {
+              content: " ";
+              background-color: aquamarine;
+              width: 50px;
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

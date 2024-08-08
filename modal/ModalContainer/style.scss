@@ -1,0 +1,21 @@
+modal-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &.has-modal {
+    display: flex;
+    background-color: rgba(grey, 0.5);
+  }
+
+  mo-dal {
+    display: block !important;
+  }
+}

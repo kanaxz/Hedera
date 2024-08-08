@@ -1,0 +1,34 @@
+<super 
+  :class="`${this.grid.@dragInfos && 'hover'}`"
+  :on-click="this.grid.focusPanel = this">
+    <slot name="header">      
+      <div class="tabs" :v-for="object of this.objects">
+        <div
+          draggable="true"
+          :class="`tab ${object === this.@currentObject && 'current'} ${this.grid.@focusPanel === this && 'selected'}`"
+          :on-dragstart="this.drag(object)"
+          :on-dragend="this.dragEnd()"
+          :on-click="this.currentObject = object">
+            <label>{{ object.data.name }}</label>
+            <div :on-click.stop="this.removeObject(object)">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>  
+      </div>
+      
+    </slot>
+    <slot>
+      <div 
+        class="container"
+        :on-dragleave="this.hover = null"
+        :on-drop="this.onDrop()"
+        :on-dragover="this.onDragOver(node, event)">
+          <div
+            class="object">
+              {{= this.@currentObject.element }}
+          </div>
+          <div :class="`hover ${this.@hover && 'visible'} ${this.@hover}`">
+          </div>
+      </div>
+    </slot>
+</super>

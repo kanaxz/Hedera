@@ -1,0 +1,17 @@
+body.shortcut {
+  short-cuts {
+    display: flex;
+  }
+}
+
+short-cuts {
+  display: none;
+  flex-direction: column;
+  align-items: start;
+  position: absolute;
+  border: 1px solid #e1e1e1;
+  top: 0;
+  left: calc(100% + 10px);
+  background-color: #fff;
+  z-index: 11;
+}

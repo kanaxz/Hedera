@@ -1,0 +1,20 @@
+<self :class="`${this.@dragInfos && 'hover'}`">
+  <div as="initSlot" slot></div>
+  <template
+    as="columnTemplate">
+      <div class="column" :v-for="row of column">
+        <div 
+          :class="`row ${ this.@hoverRow === node && 'hover'} ${this.@hoverMode}`" 
+          :v-for="cell of row"
+          :on-dragover="this.onRowDragOver(row, node, event)"
+          :on-drop="this.onRowDrop(row)">
+            <div class="cell">
+              {{= this.cell(cell, scope) }}
+            </div>
+        </div>
+      </div>
+  </template>
+  <div class="root">
+    {{= this.cell(this.column, scope) }}
+  </div>
+</self>
