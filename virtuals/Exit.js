@@ -1,4 +1,4 @@
-const Destroyable = require('core/mixins/Destroyable')
+const Destroyable = require('sools-core/mixins/Destroyable')
 const Virtual = require('../Virtual')
 
 module.exports = class Exit extends Virtual {

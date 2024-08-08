@@ -1,4 +1,4 @@
-const Event = require('core/types/Event')
+const Event = require('sools-core/types/Event')
 
 const { createFunction } = require('../utils')
 

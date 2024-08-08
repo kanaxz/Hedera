@@ -1,6 +1,6 @@
 const Component = require('../Component')
 const LocalStorageable = require('../mixins/LocalStorageable')
-const mixer = require('core/mixer')
+const mixer = require('sools-core/mixer')
 
 module.exports = class Layout extends mixer.extends(Component, [LocalStorageable]) {
 

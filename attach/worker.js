@@ -1,4 +1,4 @@
-const { set } = require('core/utils/path')
+const { set } = require('sools-core/utils/path')
 
 const as = (scope, node) => {
   const as = node.getAttribute('as')

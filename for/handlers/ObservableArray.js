@@ -1,8 +1,8 @@
-const mixer = require('core/mixer')
-const Bindeable = require('core/mixins/Bindeable')
+const mixer = require('sools-core/mixer')
+const Bindeable = require('sools-core/mixins/Bindeable')
 
-const Array = require('core/types/Array')
-const Eventable = require('core/mixins/Eventable')
+const Array = require('sools-core/types/Array')
+const Eventable = require('sools-core/mixins/Eventable')
 
 module.exports = class ObservableArrayHandler extends mixer.extends([Bindeable, Eventable]) {
   static handle(source) {

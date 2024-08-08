@@ -1,6 +1,6 @@
-const Propertiable = require('core/mixins/Propertiable')
-const mixer = require('core/mixer')
-const Bindeable = require('core/mixins/Bindeable')
+const Propertiable = require('sools-core/mixins/Propertiable')
+const mixer = require('sools-core/mixer')
+const Bindeable = require('sools-core/mixins/Bindeable')
 
 module.exports = class Service extends mixer.extends([Propertiable, Bindeable]) {
   constructor(...args) {

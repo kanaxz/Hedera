@@ -1,10 +1,10 @@
-const Bindeable = require('core/mixins/Bindeable')
-const Propertiable = require('core/mixins/Propertiable')
+const Bindeable = require('sools-core/mixins/Bindeable')
+const Propertiable = require('sools-core/mixins/Propertiable')
 const Listening = require('./mixins/Listening')
-const mixer = require('core/mixer')
+const mixer = require('sools-core/mixer')
 const Scope = require("./Scope")
 const { base } = require('./setup')
-const Destroyable = require('core/mixins/Destroyable')
+const Destroyable = require('sools-core/mixins/Destroyable')
 const BindingFunction = require('./set/BindingFunction')
 
 const Base = mixer.mixin([Destroyable, Bindeable, Propertiable, Listening], (base) => {

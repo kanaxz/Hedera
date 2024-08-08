@@ -1,4 +1,4 @@
-const mixer = require('core/mixer')
+const mixer = require('sools-core/mixer')
 const Base = require('./Base')
 const { workers } = require('./global')
 const Scope = require('./Scope')

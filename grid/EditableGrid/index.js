@@ -1,6 +1,6 @@
 const template = require('./template.html')
 const Component = require('../../Component')
-const Array = require('core/types/Array')
+const Array = require('sools-core/types/Array')
 const Panel = require('../Panel')
 const { getElementFromTemplate } = require('../../utils/template')
 const TabPanel = require('../TabPanel')

@@ -1,6 +1,6 @@
-const Eventable = require('core/mixins/Eventable')
-const mixer = require('core/mixer')
-const { chain } = require('core/utils/array')
+const Eventable = require('sools-core/mixins/Eventable')
+const mixer = require('sools-core/mixer')
+const { chain } = require('sools-core/utils/array')
 
 const functionToProcessable = (fn) => {
   return {

@@ -1,5 +1,5 @@
 const template = require('./template.html')
-const Array = require('core/types/Array')
+const Array = require('sools-core/types/Array')
 const Panel = require('../Panel')
 const { getHoverState } = require('../utils')
 require('./style.scss')

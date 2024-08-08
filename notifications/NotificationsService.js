@@ -1,5 +1,5 @@
 const Service = require('../Service')
-const Array = require('core/types/Array')
+const Array = require('sools-core/types/Array')
 const Notification = require('./Notification')
 
 const types = {

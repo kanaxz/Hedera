@@ -1,5 +1,5 @@
 const { workers } = require('../global')
-const { set } = require('core/utils/path')
+const { set } = require('sools-core/utils/path')
 const { dashToCamel } = require('../utils')
 const BindingFunction = require('./BindingFunction')
 const BindingExpression = require('./BindingExpression')

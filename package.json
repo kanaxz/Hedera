@@ -1,5 +1,5 @@
 {
-  "name": "hedera",
+  "name": "sools-hedera",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "core": "file:../core/shared",
-    "core-client": "file:../core-client"
+    "sools-core": "^1.0.0",
+    "sools-core-client": "^1.0.0"
   }
 }

@@ -1,6 +1,6 @@
-const Component = require('hedera/Component')
+const Component = require('sools-hedera/Component')
 const template = require("./template.html")
-const { notifications } = require('hedera/global')
+const { notifications } = require('sools-hedera/global')
 require("./style.scss");
 
 
