@@ -1,4 +1,4 @@
-const Propertiable = require("core/mixins/Propertiable")
+const Propertiable = require("sools-core/mixins/Propertiable")
 const mixer = require('sools-core/mixer')
 
 module.exports = mixer.mixin([Propertiable], (base) => {

@@ -8,7 +8,6 @@ module.exports = class Link extends Virtual {
     this.el.addEventListener('click', async (event) => {
       event.preventDefault()
       if (this.href) {
-        console.log('link', this.el, this.href)
         this.el.classList.add('loading')
         const start = new Date()
         await navigator.navigate(this.href)
