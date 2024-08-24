@@ -40,6 +40,7 @@ class Router extends mixer.extends([Eventable]) {
     await chain(this.processables, (p, subNext) => {
       return p.process(req, res, subNext)
     }, next)
+    await this.emit('match')
   }
 
   async process(req, res, next = () => { }) {

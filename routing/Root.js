@@ -1,4 +1,3 @@
-const Component = require('../Component')
 const Scope = require('../Scope')
 const Layout = require('./Layout')
 const RootRouter = require("./routers/RootRouter")
@@ -7,11 +6,16 @@ module.exports = class Root extends Layout {
   constructor() {
     super()
     this.router = new RootRouter(this)
+    this.router.on('match', this.b(this.onMatch))
   }
 
   async start(variables) {
     const scope = new Scope({ source: this, variables })
     await scope.render(this)
+  }
+
+  onMatch() {
+    document.body.classList.add('sools-app-ready')
   }
 
   async loadLayouts(req, layoutsTypes) {

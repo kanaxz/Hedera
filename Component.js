@@ -1,7 +1,5 @@
 const mixer = require('sools-core/mixer')
 const Base = require('./Base')
-const { workers } = require('./global')
-const Scope = require('./Scope')
 class temp extends HTMLElement {
 
 }
@@ -75,3 +73,4 @@ module.exports = class Component extends mixer.extends(temp, [Base]) {
     return this.dispatchEvent(event)
   }
 }
+  .define()

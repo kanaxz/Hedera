@@ -1,11 +1,11 @@
+const Base = require('../Base')
 const { virtuals } = require('./worker')
 const mixer = require('sools-core/mixer')
-const Base = require('../Base')
 
 module.exports = class Virtual extends mixer.extends([Base]) {
 
   static define(definition) {
-    if (definition.name) {
+    if (definition?.name) {
       virtuals.push(this)
     }
     return super.define(definition)
@@ -29,3 +29,4 @@ module.exports = class Virtual extends mixer.extends([Base]) {
 
   onReady() { }
 }
+  .define()
