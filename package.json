@@ -1,6 +1,6 @@
 {
  "name": "sools-hedera",
- "version": "1.7.0",
+ "version": "1.8.0",
  "description": "",
  "main": "index.js",
  "scripts": {
@@ -10,7 +10,7 @@
  "license": "ISC",
  "dependencies": {
   "sools-core": "^1.15.0",
-  "sools-core-client": "^1.15.0"
+  "sools-core-client": "^1.18.0"
  },
  "repository": {
   "type": "git",
