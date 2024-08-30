@@ -9,8 +9,8 @@ module.exports = class RootRoute extends Router {
   async onMatch(req, res, next) {
     res.layouts = []
     const self = this
-    res.page = async function (pageImport, ...args) {
-      await self.root.setPage(this.req, this.layouts, pageImport, args)
+    res.page = async function (pageImport, args = [], options = {}) {
+      await self.root.setPage(this.req, this.layouts, pageImport, args, options)
     }
 
     await super.onMatch(req, res, next)

@@ -47,13 +47,16 @@ module.exports = class Root extends Layout {
     return layouts
   }
 
-  async setPage(req, layoutsTypes, pageImport, args) {
+  async setPage(req, layoutsTypes, pageImport, args = [], options = {}) {
     const layouts = await this.loadLayouts(req, layoutsTypes)
     const bottomLayout = layouts[layouts.length - 1]
     const pageModule = await pageImport
     const pageType = pageModule.default
     const page = new pageType(...args)
-    await bottomLayout.setContent(page)
-    await this.emit('pageLoaded', [layouts, page])
+    let transition = options.transition || ((noop, next) => next())
+    await transition(bottomLayout, async () => {
+      await bottomLayout.setContent(page)
+      await this.emit('pageLoaded', [layouts, page])
+    })
   }
 }.define()

@@ -37,7 +37,6 @@ module.exports = class Component extends mixer.extends(temp, [Base]) {
         console.error(err)
       })
   }
-
   onReady() { }
 
   async initializeTemplate() {
