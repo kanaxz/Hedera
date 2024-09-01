@@ -17,6 +17,7 @@ const attach = (scope, node) => {
 const _in = (scope, node) => {
   const attr = node.getAttribute('in')
   if (!attr) { return }
+  node.removeAttribute('in')
   const thisArg = scope.variables.this
   if (!thisArg[attr]) {
     thisArg[attr] = []

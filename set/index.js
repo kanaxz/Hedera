@@ -7,7 +7,12 @@ const BindingExpression = require('./BindingExpression')
 const attributes = {
   class: (() => {
     const caches = []
-    return (node, value, key) => {
+    return ({ node, value, key, path }) => {
+      const [, className] = path.split('.')
+      if (className) {
+        node.classList[value ? 'add' : 'remove'](className)
+        return true
+      }
       if (!value) {
         value = ''
       }
@@ -27,18 +32,41 @@ const attributes = {
       }
       classes.forEach((c) => node.classList.add(c))
       cache.classes = classes
+      return true
     }
   })(),
-  innerHtml(node, value, key) {
+  innerHtml({ node, value }) {
     node.innerHTML = value
+    return true
+  },
+  style({ node, value, path }) {
+    if (path.split('.').length) { return false }
+    if (value) {
+      Object.assign(node.style, value)
+    }
+    return true
+  }
+}
+
+const namespaces = {
+  xlink(node, path, value) {
+    node.setAttributeNS('http://www.w3.org/1999/xlink', path, value)
   }
 }
 
 const setAttr = (node, path, value, key) => {
-  const attr = attributes[path]
-  if (attr) {
-    attr(node, value, key)
+  const [namespace] = path.split(':')
+  if (namespaces[namespace]) {
+    namespaces[namespace](node, path, value)
     return
+  }
+  const [base] = path.split('.')
+  const attr = attributes[base]
+  if (attr) {
+    if (attr({ node, value, key, path })) {
+      return
+    }
+
   }
   set(node, path, value)
 }

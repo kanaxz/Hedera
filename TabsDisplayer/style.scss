@@ -1,0 +1,28 @@
+tabs-displayer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .names {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+
+    >div {
+      cursor: pointer;
+
+      &:hover {
+        background-color: black;
+        color: white;
+      }
+
+      span {}
+    }
+  }
+
+  .current {
+    width: 100%;
+    flex:1;
+    overflow-y: auto;
+  }
+}

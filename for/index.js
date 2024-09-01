@@ -2,6 +2,7 @@ const Virtual = require('../Virtual')
 const It = require('./It')
 const { getElementFromTemplate, getElementFromObject } = require('../utils/template')
 const handlers = require('./handlers')
+const { wait } = require('sools-core/utils/promise')
 
 module.exports = class For extends Virtual {
   async onInit() {
@@ -72,15 +73,11 @@ module.exports = class For extends Virtual {
     setTimeout(async () => {
       const source = this.source
       while (i < source.length && source === this.source) {
-        await new Promise(async (resolve) => {
-          setTimeout(async () => {
-            const it = this.iteration(this.source[i], i)
-            this.el.appendChild(it.element)
-            it.element = await it.scope.render(it.element)
-            i++
-            resolve()
-          }, 0)
-        })
+        const it = this.iteration(this.source[i], i)
+        this.el.appendChild(it.element)
+        it.element = await it.scope.render(it.element)
+        i++
+        //await wait(0)
       }
     })
 

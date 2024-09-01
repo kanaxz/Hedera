@@ -258,6 +258,10 @@ module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
     }
     if (state.virtuals) {
       for (const virtual of state.virtuals) {
+        Promise.resolve(virtual.onReady())
+          .catch((err) => {
+            console.error(err)
+          })
         if (await virtual.preventInitialize()) {
           return
         }
@@ -273,16 +277,16 @@ module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
   }
 
   async readyVirtuals(state) {
-    if (state.virtuals) {
-      for (const virtual of state.virtuals) {
-        //await virtual.onReady()
+    if (!state.virtuals) { return }
 
-        Promise.resolve(virtual.onReady())
-          .catch((err) => {
-            console.error(err)
-          })
-        /**/
-      }
+    for (const virtual of state.virtuals) {
+      //await virtual.onReady()
+
+      Promise.resolve(virtual.onReady())
+        .catch((err) => {
+          console.error(err)
+        })
+      /**/
     }
   }
 

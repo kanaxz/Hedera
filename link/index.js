@@ -1,6 +1,25 @@
+require('../set')
+const { workers } = require('../global')
 const Virtual = require('../Virtual')
 const { navigator } = require('../global')
 
+workers.push({
+  async process(scope, state) {
+    const { node } = state
+    if (node.nodeName !== 'A') { return }
+
+    node.addEventListener('click', async (event) => {
+      if (!node.href) { return }
+      if (!node.href?.startsWith(location.origin)) { return }
+
+      event.preventDefault()
+      node.classList.add('loading')
+      await navigator.navigate(node.href)
+      node.classList.remove('loading')
+    })
+  }
+})
+/*
 module.exports = class Link extends Virtual {
   async onInit() {
     await this.bind('href', this.initialValue)
@@ -42,3 +61,4 @@ module.exports = class Link extends Virtual {
   .properties({
     href: 'any',
   })
+/**/

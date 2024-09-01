@@ -1,0 +1,15 @@
+<self>
+  <div as="initSlot" slot></div>
+  <div class="names" :v-for="tab of this.tabs">
+    <div 
+      class="name" 
+      :class.selected="this.@currentTab === tab" 
+      :on-click="this.currentTab = tab"
+      :style.display="tab.display !== false ? 'block' : 'none'">
+        <span>{{tab.@name}}</span>
+    </div>
+  </div>
+  <div class="current">
+    {{=this.@currentTab}}
+  </div>
+</self>
