@@ -18,6 +18,7 @@ const modes = {
 module.exports = class SelectableRoot extends Virtual {
   async onInit() {
     this.mode = 'vertical'
+    this.disable = false
     if (this.initialValue) {
       await this.bind('mode', this.initialValue)
     }
@@ -34,7 +35,14 @@ module.exports = class SelectableRoot extends Virtual {
   }
 
   getSelectable(node) {
-    return node.hederaStates.find((s) => s.virtuals?.find((v) => v instanceof SelectableRoot.Selectable)?.root === this)
+    if (!node.hederaStates) { return null }
+    for (const state of node.hederaStates) {
+      const selectable = state.virtuals.find((v) => v instanceof SelectableRoot.Selectable && v.root === this)
+      if (selectable) {
+        return selectable
+      }
+    }
+    return null
   }
 
 
@@ -61,14 +69,15 @@ module.exports = class SelectableRoot extends Virtual {
   }
 
   async onKeyDown(e) {
+    if (this.disable) { return }
     if (e.key === 'Enter') {
       e.preventDefault()
       const selected = this.getSelected()
-      await this.getSelectable(selected).callback()
+      const selectable = this.getSelectable(selected)
+      await selectable.callback()
       return
     }
-    const mode = this.mode
-    if (modes[mode].indexOf(e.key) === -1) { return }
+    if (modes[this.mode].indexOf(e.key) === -1) { return }
 
     const key = keys.find(([check]) => check(e))
     if (!key) { return }
@@ -97,7 +106,4 @@ module.exports = class SelectableRoot extends Virtual {
 }
   .define({
     name: 'selectableRoot'
-  })
-  .properties({
-    mode: 'any',
   })

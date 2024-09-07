@@ -29,8 +29,10 @@ const Base = mixer.mixin([Destroyable, Bindeable, Propertiable, Listening], (bas
 
     async bind(name, value) {
       const variables = this.getVariables()
-      const binding = new BindingFunction(value, variables, (value) => {
-        this[name] = value
+      const binding = new BindingFunction(value, variables, async (value) => {
+        await this.set({
+          [name]: value
+        })
       })
       await binding.update()
       this.bindings.push(binding)

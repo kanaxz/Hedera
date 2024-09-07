@@ -1,8 +1,8 @@
 <super 
-  :class="`${this.grid.@dragInfos && 'hover'}`"
+  :class.hover="this.grid.@dragInfos"
   :on-click="this.grid.focusPanel = this">
     <slot name="header">      
-      <div class="tabs" :v-for="object of this.objects">
+      <div class="tabs" @for="object of this.objects">
         <div
           draggable="true"
           :class="`tab ${object === this.@currentObject && 'current'} ${this.grid.@focusPanel === this && 'selected'}`"

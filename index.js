@@ -1,3 +1,4 @@
+require('./scoping')
 require('./Virtual')
 require('./routing/Root')
 require('./attach')

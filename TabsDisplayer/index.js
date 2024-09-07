@@ -10,13 +10,9 @@ module.exports = class TabsDisplayer extends Component {
     this.tabs = new Array()
   }
 
-  onReady() {
-    while (this.initSlot.firstElementChild) {
-      const node = this.initSlot.firstElementChild
-      node.remove()
-      this.tabs.push(node)
-    }
-    this.currentTab = this.tabs[0]
+  onInit() {
+    console.log(...this.tabs.map((t) => t.name))
+    this.focus(this.tabs?.[0])
   }
 
   focus(tab) {

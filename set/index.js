@@ -35,12 +35,12 @@ const attributes = {
       return true
     }
   })(),
-  innerHtml({ node, value }) {
+  'inner-html'({ node, value }) {
     node.innerHTML = value
     return true
   },
   style({ node, value, path }) {
-    if (path.split('.').length) { return false }
+    if (path.split('.').length > 1) { return false }
     if (value) {
       Object.assign(node.style, value)
     }
@@ -68,7 +68,9 @@ const setAttr = (node, path, value, key) => {
     }
 
   }
-  set(node, path, value)
+  
+  const camelPath = dashToCamel(path)
+  set(node, camelPath, value)
 }
 
 const PREFIX = ':'
@@ -137,7 +139,7 @@ workers.push({
     const attributes = [...node.attributes]
       .filter((attr) => attr.name.startsWith(PREFIX))
     for (const attr of attributes) {
-      const path = dashToCamel(attr.name.replace(PREFIX, ''))
+      const path = attr.name.replace(PREFIX, '')
       const bindingFunction = new BindingFunction(attr.nodeValue, { ...scope.variables }, (value) => {
         setAttr(node, path, value, attr.nodeValue)
       })

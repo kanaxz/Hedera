@@ -1,4 +1,4 @@
-const Scope = require('../Scope')
+const Scope = require('../scoping/Scope')
 const Layout = require('./Layout')
 const RootRouter = require("./routers/RootRouter")
 

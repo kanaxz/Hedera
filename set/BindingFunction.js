@@ -68,10 +68,19 @@ module.exports = class BindingFunction {
           })
           this.listeners.push(listener)
         }
+
         value = value[propertyName]
         if (value) {
+          if (segment.endsWith('@')) {
+            const listener = value.on('changed', async () => {
+              await this.update()
+            })
+            this.listeners.push(listener)
+          }
           onBindingGetProperty.trigger(this, value)
         }
+
+
       })
     })
     if (trigger) {

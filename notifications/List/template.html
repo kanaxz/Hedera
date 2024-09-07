@@ -1,5 +1,5 @@
 <self>
-  <div class="notifications" :v-for="notification of service.notifications">
+  <div class="notifications" @for="notification of service.notifications">
     <div class="notification" 
       :on-click="notification.close()"
       :class="`${notification.type.name} ${ notification.@isClosed ? 'closed' : ''}`">  

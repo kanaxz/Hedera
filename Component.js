@@ -12,11 +12,6 @@ module.exports = class Component extends mixer.extends(temp, [Base]) {
     return super.define(definition)
   }
 
-  constructor() {
-    super()
-    this.scope = null
-  }
-
   attach(scope) {
     //this.upScope = scope
     this.scope = scope.child({
@@ -28,9 +23,10 @@ module.exports = class Component extends mixer.extends(temp, [Base]) {
 
   async initialize() {
     this.scope.type = this.constructor
+    const slots = await this.scope.renderInitialContent(this.childNodes, this.scope.parent)
     await super.initialize()
-    this.initialContent = [...this.childNodes]
     await this.initializeTemplate()
+    await this.scope.renderSlots(slots, this.scope.parent)
     this.event('ready')
     Promise.resolve(this.onReady())
       .catch((err) => {
@@ -40,28 +36,9 @@ module.exports = class Component extends mixer.extends(temp, [Base]) {
   onReady() { }
 
   async initializeTemplate() {
-    const definition = this.constructor.definitions.find((d) => d.template)
-    if (definition) {
-      this.innerHTML = definition.template
-      await this.scope.renderContent(this)
-    }
-
-    await this.scope.renderSlots(this.initialContent, this.scope.parent)
-  }
-
-  async awaitConnect() {
-    if (this.isConnected) { return }
-
-    return new Promise((resolve) => {
-      const listener = this.on('connected', () => {
-        resolve()
-        listener.remove()
-      })
-    })
-  }
-
-  connectedCallback() {
-    this.emit('connected')
+    const template = this.constructor.definitions.find((d) => d.template)?.template
+    this.innerHTML = template || ''
+    await this.scope.renderContent(this)
   }
 
   event(name, arg) {

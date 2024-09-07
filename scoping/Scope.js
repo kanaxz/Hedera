@@ -1,129 +1,12 @@
 const mixer = require('sools-core/mixer')
-const { workers } = require('./global')
+const { workers } = require('../global')
 const Destroyable = require('sools-core/mixins/Destroyable')
 const Eventable = require('sools-core/mixins/Eventable')
-const Vars = require('./Vars')
-const { moveAttributes } = require('./utils')
-const BindingFunction = require('./set/BindingFunction')
-const { getElementFromTemplate } = require('./utils/template')
-
-workers.push({
-  process(scope, { node }) {
-    if (node.nodeType !== Node.ELEMENT_NODE) { return }
-    if (!node.hasAttribute('slot')) { return }
-    const slotName = node.getAttribute('slot') || 'main'
-    node.removeAttribute('slot')
-
-    scope.slots[slotName] = {
-      node,
-      children: [...node.childNodes]
-    }
-  }
-})
-
-
-const processors = [
-  async (scope, node) => {
-    if (node.nodeName !== 'SELF') {
-      return false
-    }
-
-    // move self content
-    const parent = node.parentElement
-    node.remove()
-    while (node.childNodes.length) {
-      parent.appendChild(node.childNodes[0])
-    }
-
-    // move attributes
-    const component = scope.variables.this
-    moveAttributes(node, component)
-    const state = await scope.process(component)
-    await scope.readyVirtuals(state)
-
-    // process
-    await scope.renderContent(parent)
-    return true
-  },
-  async (scope, node) => {
-    if (node.nodeName !== 'SUPER') {
-      return false
-    }
-    // process super attributes
-    const component = scope.variables.this
-    moveAttributes(node, component)
-    await scope.process(component)
-
-    // process super template
-    const nextDefinition = scope.type.definitions.filter((d) => d.template)[1]
-    if (!nextDefinition) {
-      throw new Error(`Cannot invoke 'super' as there is no parent with a template`)
-    }
-    const initialContent = [...node.childNodes]
-
-    // create a temp div and set inner-html, and use child nodes to replace super node
-    const container = document.createElement('div')
-    container.innerHTML = nextDefinition.template
-    const superNodes = [...container.childNodes]
-    node.replaceWith(...superNodes)
-
-    // render new child nodes
-    const childScope = scope.child()
-    childScope.type = nextDefinition.owner
-    childScope.slots = {}
-    scope.slots.__proto__ = childScope.slots
-    for (const node of superNodes) {
-      await childScope.render(node)
-    }
-
-    // process super content
-    await childScope.renderSlots(initialContent)
-    return true
-  },
-  async (scope, node) => {
-    if (node.nodeName !== 'SUPER-SLOT') {
-      return false
-    }
-
-    node.replaceWith(...scope.currentSlot.children)
-    return true
-  },
-  async (scope, node) => {
-    if (node.nodeName !== 'VARS') {
-      return false
-    }
-    const vars = scope.variables.$
-    for (const attribute of node.attributes) {
-      const propertyName = attribute.name.replace(':', '')
-      if (!vars.hasOwnProperty(propertyName)) {
-        vars.defineProperty({
-          name: propertyName
-        })
-      }
-
-
-      const bindingFunction = new BindingFunction(attribute.value, scope.variables, (value) => {
-        vars[propertyName] = value
-      })
-
-      await bindingFunction.update()
-
-      vars.bindingFunctions.push(bindingFunction)
-    }
-    node.remove()
-    return true
-  },
-]
-
-const findFirstNode = (nodes) => {
-  for (node of nodes) {
-    if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() === '') {
-      continue
-    }
-    return node
-  }
-  return null
-}
+const Vars = require('../Vars')
+const { getElementFromTemplate } = require('../utils/template')
+const processors = require('./processors')
+const Array = require('sools-modeling/types/Array')
+const { dashToCamel } = require('../utils')
 
 module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
   constructor({ source, parent, variables }) {
@@ -149,21 +32,48 @@ module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
       parent: this,
       ...options
     })
+    if(!this.childs){
+      console.log(this)
+    }
     this.childs.push(child)
     return child
   }
 
-  async renderSlots(nodes, renderScope) {
-    if (this.destroyed) { return }
-    if (!nodes.length) { return }
-    if (!renderScope) {
-      renderScope = this
+  async renderInitialContent(nodes, renderScope) {
+    nodes = [...nodes]
+      .filter((n) => n.nodeType !== Node.TEXT_NODE || n.textContent.trim() !== '')
+
+    const hasSpecialNodes = nodes
+      .some((n) => n.nodeName.startsWith('SET.') || n.nodeName === 'SLOT')
+
+    if (!hasSpecialNodes) {
+      if (nodes.length) {
+        return [{ name: 'main', nodes }]
+      }
+      return []
     }
-    const renderSlot = async (slotName, nodes) => {
-      const slot = this.slots[slotName]
+
+    let slots = []
+    nodes = [...nodes].filter((n) => n.nodeType === Node.ELEMENT_NODE)
+    for (const node of nodes) {
+      if (node.nodeName.startsWith('SET.')) {
+        const [, propertyName] = dashToCamel(node.nodeName.toLowerCase()).split('.')
+        await renderScope.renderContent(node)
+        this.variables.this[propertyName] = new Array(...node.children)
+      } else if (node.nodeName === 'SLOT') {
+        const name = node.getAttribute('name') || 'main'
+        slots.push({ name, nodes: [...node.childNodes] })
+      }
+    }
+    return slots
+  }
+
+  async renderSlots(slots, renderScope) {
+    for (const { name, nodes } of slots) {
+      const slot = this.slots[name]
       if (!slot) {
         console.log(this)
-        throw new Error(`Slot ${slotName} not found`)
+        throw new Error(`Slot ${name} not found`)
       }
       this.currentSlot = slot
 
@@ -172,23 +82,7 @@ module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
       for (const node of nodes) {
         await renderScope.render(node)
       }
-
     }
-    const firstNode = findFirstNode(nodes)
-    if (!firstNode) {
-      return
-    }
-    if (firstNode.nodeName !== 'SLOT') {
-      await renderSlot('main', nodes)
-    } else {
-      const slots = [...nodes].filter((n) => n.nodeType === Node.ELEMENT_NODE)
-      for (const slot of slots) {
-        const slotName = slot.getAttribute('name') || 'main'
-        slot.removeAttribute('name')
-        await renderSlot(slotName, [...slot.childNodes])
-      }
-    }
-
   }
 
   async process(node) {
@@ -213,12 +107,14 @@ module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
     return this.render(node, variables)
   }
 
+  /*
   getState(node) {
     const state = this.states.find((state) => state.node === node)
     if (state) { return state }
 
     return this.parent.getState(node)
   }
+  */
 
   async renderContent(node) {
     for (const n of node.childNodes) {
@@ -227,6 +123,8 @@ module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
   }
 
   async render(node, variables = {}) {
+  
+
     if (this.destroyed) { return }
     Object.assign(this.variables, variables)
     for (const processor of processors) {
@@ -237,7 +135,9 @@ module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
     if (node.rendered) { return node }
     node.rendered = true
     if (node.attach) {
+      
       node = await node.attach(this)
+
     }
     if (!node) { return null }
 
@@ -253,7 +153,7 @@ module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
     }
     const { node } = state
     if (node.isInitialized) {
-      //console.warn('Already initialized', node)
+      console.warn('Already initialized', node)
       return
     }
     if (state.virtuals) {
@@ -263,6 +163,7 @@ module.exports = class Scope extends mixer.extends([Destroyable, Eventable]) {
             console.error(err)
           })
         if (await virtual.preventInitialize()) {
+          //console.warn('prevented', node, virtual)
           return
         }
       }

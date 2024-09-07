@@ -32,6 +32,10 @@ const attributes = {
   },
 }
 
+const prefixes = {
+  '@': ':v-on'
+}
+
 const moveAttributes = (from, to, exclude = []) => {
   [...from.attributes]
     .forEach((attr) => {
@@ -41,7 +45,14 @@ const moveAttributes = (from, to, exclude = []) => {
       if (attrType) {
         attrType(from, attr.value)
       } else {
-        to.setAttribute(attr.name, attr.nodeValue)
+        let attrName = attr.name
+        Object.entries(prefixes)
+          .forEach(([k, v]) => {
+            if (attrName.startsWith(k)) {
+              attrName = attrName.replace(k, v)
+            }
+          })
+        to.setAttribute(attrName, attr.nodeValue)
       }
 
     })
